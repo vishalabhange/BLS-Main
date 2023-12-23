@@ -1,31 +1,18 @@
-// WelcomePage.js
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import "../Other/WelcomePage.css";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const WelcomePage = () => {
-  //   const history = useHistory();
+const AddItemsPage = () => {
   const navigate = useNavigate();
-  // const location = useLocation();
   const [profileData, setProfileData] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const getAuthToken = () => {
     const authToken = localStorage.getItem("authToken");
     return authToken;
   };
 
-
-  // const name = new URLSearchParams(location.search).get("name");
-  // console.log("Name:", name);
-
-  const [countdown, setCountdown] = useState(3);
-
-  // Redirect to home page after 3 seconds
+  // Fetch profile data from the API endpoint
   useEffect(() => {
-
-
     // Get the JWT token
     const authToken = getAuthToken();
 
@@ -47,30 +34,29 @@ const WelcomePage = () => {
       .catch((error) => {
         console.error("Error fetching profile data: " + error);
       });
-
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
-
-    const redirectTimer = setTimeout(() => {
-      navigate("/Additems");
-    }, 3000);
-
-    return () => {
-      clearInterval(timer);
-      clearTimeout(redirectTimer);
-    }; // Cleanup to avoid memory leaks
-  }, [navigate]);
+  }, []);
 
   return (
-    <section id="welcome-section">
-      <div>
-        <h1>Welcome {profileData?.Name}</h1>
-        <p>...have a look around</p>
+    <>
+      <div className="itemlist-page">
+        <div className="shopping-sidenav">
+          {/* You can render profile data here if needed */}
+          {profileData && (
+            <div>
+              <h2>Profile Details</h2>
+              <p>Name: {profileData.Name}</p>
+              <p>Email: {profileData.email}</p>
+              {/* Add other profile details as needed */}
+            </div>
+          )}
+        </div>
+        <div className="itemlist-container">
+          {/* Render items as before */}
+          {/* ... */}
+        </div>
       </div>
-    </section>
+    </>
   );
 };
 
-export default WelcomePage;
+export default AddItemsPage;

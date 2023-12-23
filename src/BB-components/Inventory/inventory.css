@@ -1,40 +1,53 @@
 /* AddProductForm.css */
 .add-product-form {
-  max-width: 400px;
+  font-size: 1.2rem;
+  max-width: 800px;
+  max-height: 700px;
   margin: auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  border: 1px solid #3498db; /* Change border color */
+  border-radius: 10px; /* Increase border radius for a softer look */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Adjust box shadow for depth */
+  background-color: #f8f9fa; /* Use a light background color */
 }
 
 .add-product-form h2 {
+  font-size: 1.7rem;
   text-align: center;
-  color: #333;
+  color: #3498db; /* Change heading color to a blue shade */
 }
 
 .add-product-form label {
   display: block;
   margin-bottom: 10px;
+  color: #555; /* Adjust label text color */
 }
 
 .add-product-form input {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 12px; /* Increase input padding for a more spacious feel */
+  margin-bottom: 15px; /* Increase margin for a better separation */
   box-sizing: border-box;
+  border: 1px solid #ccc; /* Add border to input for clarity */
+  border-radius: 5px;
+  background-color: #fff; /* White background for input */
+  transition: border-color 0.3s ease; /* Add transition for smoother interaction */
+
+  &:focus {
+    border-color: #3498db; /* Highlight input on focus */
+  }
 }
 
 .add-product-btn {
-  background-color: #4caf50;
+  background-color: #3498db; /* Use a matching color for the button */
   color: #fff;
-  padding: 10px;
+  padding: 12px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease; /* Add transition for smoother interaction */
 }
 
 .add-product-btn:hover {
-  background-color: #45a049;
+  background-color: #2073b4; /* Darker shade on hover for contrast */
 }

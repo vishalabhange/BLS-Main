@@ -13,6 +13,7 @@ export const Navbar = () => {
         <a href="/addextra">Inventory</a>
         <a href="/Subscription">Subscription</a>
         <a href="/Payment">Payment</a>
+        <a href="/Users">Users</a>
         {/* <a href="/SearchBar">Search</a> */}
       </div>
     </>

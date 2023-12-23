@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../Authentication/loginPage.css";
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -25,13 +25,17 @@ const LoginPage = () => {
         // Save the token to local storage or state for future use
         localStorage.setItem('authToken', authtoken);
 
+        props.showAlert("Successfully logged in", "success");
+
         // Redirect to the welcome page
         navigate('/Welcome');
       } else {
         // Handle login failure
         const data = await response.json();
         console.error(data.error);
+        
         // You might want to show an error message to the user
+        props.showAlert("Invalid Credentials", "Danger");
       }
     } catch (error) {
       console.error("Error during login:", error);

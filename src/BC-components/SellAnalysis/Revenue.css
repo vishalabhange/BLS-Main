@@ -2,45 +2,54 @@
 
 /* Container styling */
 .HistoryList {
-    margin: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-  
-  /* Header styling */
-  .HistoryList h2 {
-    color: #333;
-  }
-  
-  /* List styling */
-  .HistoryList ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .HistoryList ul li {
-    cursor: pointer;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #f2f2f2;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-  }
-  
-  .HistoryList ul li:hover {
-    background-color: #e0e0e0;
-  }
-  
-  /* Selected invoice details styling */
-  .HistoryListItem h3 {
-    margin-top: 20px;
-    color: #333;
-  }
-  
-  /* Detailed information styling */
-  div > p {
-    margin-bottom: 10px;
-    color: #555;
-  }
-  
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #3498db; /* Change border color */
+  border-radius: 10px;
+  background-color: #f8f9fa; /* Light background color */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Adjust box shadow for depth */
+}
+
+/* Header styling */
+.HistoryList h2 {
+  color: #3498db; /* Heading color matching border color */
+}
+
+/* List styling */
+.HistoryList ol {
+  /* list-style-type: none; */
+  padding: 15px;
+}
+
+.HistoryList ol li {
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 15px; /* Increase padding for better spacing */
+  background-color: #ecf0f1; /* Light background color */
+  border-radius: 8px;
+  transition: background-color 0.3s, transform 0.3s; /* Add transition for smoother interaction */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add subtle box shadow */
+  border: 1px solid #000;
+}
+
+.HistoryList ol li:hover {
+  background-color: #b9eaff;
+  /*Darkershadeonhoverforcontrast*/transform: scale(1.02);
+  /*Slightscaleeffectonhover*/-webkit-transform: scale(1.02);
+  -moz-transform: scale(1.02);
+  -ms-transform: scale(1.02);
+  -o-transform: scale(1.02);
+  -webkit-transform: scale(1.02);
+}
+
+/* Selected invoice details styling */
+.HistoryListItem h3 {
+  margin-top: 20px;
+  color: #3498db; /* Heading color matching border color */
+}
+
+/* Detailed information styling */
+div > p {
+  margin-bottom: 15px; /* Increase margin for better spacing */
+  color: #555;
+}

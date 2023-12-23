@@ -1,130 +1,155 @@
-import React, { useState } from 'react';
-import '../Authentication/ProfilePage.css'; // Import your CSS file for styling
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import defaultAvatar from "C:/Users/Vishal/Downloads/Merge-BS/src/images/default-2.jpg";
+import "../Authentication/ProfilePage.css";
+// import SideBar from "../Bars/SideBar";
 
 const ProfilePage = () => {
-  // State variables
-  const [fullName, setFullName] = useState('Tatya Vinchu');
-  const [email, setEmail] = useState('Billings@example.com');
-  const [bio, setBio] = useState('Billings');
-  const [avatar, setAvatar] = useState('path/to/avatar.jpg');
+  // const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Function to handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add logic to handle profile updates (e.g., make an API request)
-    // For demonstration purposes, simply logging the updated profile details
-    console.log('Updated Profile:', { fullName, email, bio, avatar });
+  const getAuthToken = () => {
+    const authToken = localStorage.getItem("authToken");
+    return authToken;
   };
+
+  // Fetch profile data from the API endpoint
+  useEffect(() => {
+    // Get the JWT token
+    const authToken = getAuthToken();
+
+    // Set up the headers with the JWT token
+    const headers = {
+      Authorization: `${authToken}`,
+    };
+
+    axios
+      .get("http://localhost:8000/api/auth/Profile", { headers })
+      .then((response) => {
+        // Ensure that response.data.vendorDetails is an object
+        if (typeof response.data.vendorDetails === "object") {
+          setProfileData(response.data.vendorDetails); // Set profile data to the vendorDetails object
+        } else {
+          console.error("Invalid data received from the profile API");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching profile data: " + error);
+      });
+  }, []);
 
   // Function to handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatar(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setSelectedFile(file);
     }
   };
 
-  // Example usage
-  const createVendor = async (vendorDetails) => {
-    try {
-      const response = await fetch('http://localhost:8000/api/auth/Profile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any other headers as needed, e.g., authorization token
-        },
-        body: JSON.stringify({ vendorDetails }),
-      });
+  // const navigateToAnotherPage = () => {
+  //   const nameParam = encodeURIComponent(profileData?.Name);
+  //   navigate(`/Welcome?name=${nameParam}`);
+  // };
+  
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error creating vendor:', errorData.error);
-      } else {
-        const createdVendor = await response.json();
-        console.log('Vendor created successfully:', createdVendor);
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // If a file is selected, perform the file upload
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("avatar", selectedFile);
+      console.log(formData);
+
+      try {
+        const authToken = getAuthToken();
+        const headers = {
+          Authorization: `${authToken}`,
+          "Content-Type": "multipart/form-data",
+        };
+
+        // Upload the file and get the updated avatar URL
+        const response = await axios.post(
+          "http://localhost:8000/api/auth/Profile",
+          formData,
+          { headers }
+        );
+
+        // Update the profileData state with the new avatar URL
+        setProfileData((prevProfileData) => ({
+          ...prevProfileData,
+          avatar: response.data.avatarUrl,
+        }));
+
+        // Update the profile image link in the database
+        await axios.post(
+          "http://localhost:8000/api/auth/Profile",
+          { profileImg: response.data.avatarUrl },
+          { headers }
+        );
+
+        // Handle the response as needed
+        console.log("File uploaded successfully:", response.data);
+        // After uploading, navigate to another page
+        // navigateToAnotherPage();
+
+      } catch (error) {
+        console.error("Error uploading file:", error.message);
       }
-    } catch (error) {
-      console.error('Error creating vendor:', error.message);
     }
-  };
 
-  // Example usage
-  const newVendorDetails = {
-    VendorID: 123,
-    Name: 'Vendor Name',
-    Address: 'Vendor Address',
-    ShopName: 'Vendor Shop',
-    Location: 'Vendor Location',
-    PinCode: '123456',
-    ContactNo: '1234567890',
-    GSTNo: 'ABC123',
-    email: 'vendor@example.com',
   };
-
-  createVendor(newVendorDetails);
 
   return (
-    <div className="profile-container">
+    <div className="profile-page">
+      {/* <div className="shopping-sidenav">
+          <SideBar />
+        </div> */}
       <div className="profile-header">
-        {avatar && typeof avatar === 'string' ? (
-          <img src={avatar} alt="Profile Avatar" className="avatar" />
-        ) : (
-          <div className="avatar-placeholder">Placeholder or Default Avatar</div>
-        )}
-        <h2>{fullName}</h2>
-        <p>{email}</p>
+        <img
+          src={profileData?.avatar || defaultAvatar}
+          alt="Profile Avatar"
+          className="avatar"
+        />
+        <div className="profile-details">
+          <h2>{profileData?.Name}</h2>
+          <p>ID: {profileData?.VendorID}</p>
+        </div>
       </div>
 
-      <div className="profile-details">
-        <h3>About Me</h3>
-        <p>{bio}</p>
-      </div>
+      <form onSubmit={handleSubmit} className="profile-form">
+        {/* File input for uploading profile picture */}
+        <label htmlFor="avatarInput">Upload Profile Picture:</label>
+        <input
+          type="file"
+          accept="image/*"
+          id="avatarInput"
+          onChange={handleFileChange}
+        />
 
-      <div className="profile-edit">
-        <h3>Edit Profile</h3>
-        <form onSubmit={handleSubmit}>
-          <label>Full Name:</label>
-          <input
-            type="text"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
+        <button type="submit">Save Changes</button>
+      </form>
 
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+      {profileData && (
+        <div className="profile-info">
+          <h3>Contact Information</h3>
+          <p>Email: {profileData.email}</p>
+          <p>Phone No: {profileData.ContactNo}</p>
+        </div>
+      )}
 
-          <label>Bio:</label>
-          <textarea value={bio} onChange={(e) => setBio(e.target.value)}></textarea>
-
-          <label>Avatar URL:</label>
-          <input
-            type="text"
-            value={avatar}
-            onChange={(e) => setAvatar(e.target.value)}
-          />
-
-          {/* File input for uploading profile picture */}
-          <label>Upload Profile Picture:</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-
-          <button type="submit">Save Changes</button>
-        </form>
-      </div>
+      {profileData && (
+        <div className="profile-address">
+          <h3>Shop Details</h3>
+          <p>Shop: {profileData.ShopName}</p>
+          <p>
+            Address: {profileData.Address}, {profileData.PinCode}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

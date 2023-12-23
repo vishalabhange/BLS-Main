@@ -95,9 +95,35 @@ const invoicesController = {
         res.status(500).json({ error: 'Error fetching invoices' });
       }
     });
+  },
+
+  getInvoiceItems : async (req, res) => {
+    try {
+      const MainInvoiceID = req.params.Name; // Updated: use req.params.MainInvoiceID directly
+      console.log(MainInvoiceID);
+
+      const getInvoiceItemsQuery = `
+        SELECT
+          MainInvoiceID,
+          ProductName,
+          Quantity,
+          UnitPrice,
+          SubTotal
+        FROM
+          invoice_items
+        WHERE
+          MainInvoiceID = ?`;
+
+      const [invoiceItemsResults] = await pool.query(getInvoiceItemsQuery, [MainInvoiceID]);
+
+      return res.status(200).json({ invoiceItems: invoiceItemsResults });
+    } catch (error) {
+      console.error('Error fetching invoice items:', error);
+      return res.status(500).json({ error: 'Error fetching invoice items' });
+    }
   }
 
-  
+
 };
 
 

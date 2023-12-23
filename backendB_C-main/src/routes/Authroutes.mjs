@@ -27,6 +27,8 @@ const updateProfileValidation = [
   body('email').optional().isEmail().withMessage('Enter a valid email'),
   body('contactNo').optional().isMobilePhone().withMessage('Enter a valid contact number'),
   body('shopName').optional().isLength({ min: 3 }).withMessage('Enter a valid shop name'),
+  body('ProfileImg').optional().isLength({ min: 3 }).withMessage('Enter a valid image'),
+  body('AdhaarNo').optional().isMobilePhone().withMessage('Enter a valid Adhaar number'),
   body('password').optional().isLength({ min: 4 }).withMessage('Password is too short'),
 ];
 

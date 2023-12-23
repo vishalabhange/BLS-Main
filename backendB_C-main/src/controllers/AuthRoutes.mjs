@@ -170,7 +170,7 @@ login : async (req, res) => {
         const { VendorID } = req.user;
   
         try {
-          const { name, email, contactNo, shopName, password } = req.body;
+          const { name, email, contactNo, shopName, password, ProfileImg,AdhaarNo } = req.body;
   
           // Check if the user with the given VendorID exists
           const [existingUser] = await pool.query('SELECT * FROM vendors WHERE vendorid = ?', [VendorID]);
@@ -189,8 +189,8 @@ login : async (req, res) => {
   
           // Update the user profile in the vendors table
           await pool.query(
-            'UPDATE vendors SET name=?, email=?, ContactNo=?, ShopName=?, password=? WHERE VendorID=?',
-            [name, email, contactNo, shopName, hashedPassword, VendorID]
+            'UPDATE vendors SET name=?, email=?, ContactNo=?, ShopName=?, password=?, ProfileImg=?,AdhaarNo =? WHERE VendorID=?',
+            [name, email, contactNo, shopName, hashedPassword, ProfileImg ,AdhaarNo ,VendorID]
           );
   
           res.json({ message: 'Profile updated successfully' });
@@ -213,7 +213,7 @@ login : async (req, res) => {
   
           // Fetch specific vendor details from the database based on VendorID
           const [vendorDetails] = await pool.query(
-            'SELECT VendorID, Name, Address, ShopName, Location, PinCode, ContactNo, GSTNo, email FROM vendors WHERE VendorID = ?',
+            'SELECT VendorID, Name, Address, ShopName, Location, PinCode, ContactNo, GSTNo,ProfileImg, email FROM vendors WHERE VendorID = ?',
             [VendorID]
           );
   

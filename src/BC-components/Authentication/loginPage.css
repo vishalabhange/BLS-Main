@@ -10,7 +10,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: radial-gradient(circle, #8836ff, #7c34ff, #6e32ff, #5f31ff, #4c30ff, #5c44ff, #6a56ff, #7866ff, #9e8cff, #bfb2ff, #dfd8ff, #ffffff);
+    background-image: radial-gradient(circle, #00fff1, #13f9f8, #2ef3fd, #45ecff, #5ae5ff, #7ae4ff, #94e2ff, #aae1ff, #c8e6ff, #e1edff, #f3f5ff, #ffffff);
     column-gap: 30px;
 }
 .container-forms .form{
@@ -78,12 +78,12 @@ form{
 }
 .field button{
     color: #fff;
-    background-color: #424242;
+    background-color: #4267b2;
     transition: all 0.3s ease;
     cursor: pointer;
 }
 .field button:hover{
-    background-color: #000000;
+    background-color: #0077ff;
 }
 .form-link{
     text-align: center;

@@ -36,6 +36,8 @@ import TransactionHistory from "./BB-components/Transactions/TransactionHistory.
 import Subscription from "./BB-components/Renew/Subscription.js";
 import Payments from "./BB-components/Payments/Payment1.js";
 import SearchBar from "./BB-components/Bars/SearchBar.js";
+import Users from "./BB-components/Other/Users.js";
+import Alert from "./BC-components/Other/Alert.js";
 
 
 const App = ({ component: Component, ...rest }) => {
@@ -60,18 +62,30 @@ const App = ({ component: Component, ...rest }) => {
     setCart(updatedCart);
   };
 
+  const [alert, setAlert] = useState(null)
+  const showAlert = (message, type) => {
+    setAlert({
+      msg: message,
+      type: type
+    })
+    setTimeout(() => {
+      setAlert(null);
+    }, 1500);
+  }
+
 
   return (
     <>
       {/* <Navbar /> */}
+      {/* <Alert alert={alert}/> */}
       <Routes>
         {/* Landing */}
         <Route exact path="/Landing" element={<Landing />} />
 
         {/* -----------------------  BC-routing  --------------------------- */}
 
-        <Route exact path="/" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route exact path="/" element={<LoginPage showAlert={showAlert} />} />
+        <Route path="/signup" element={<SignupPage showAlert={showAlert} />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route
           path="/Welcome"
@@ -175,6 +189,10 @@ const App = ({ component: Component, ...rest }) => {
         <Route
           path="/SearchBar"
           element={isAuthenticated ? <SearchBar /> : <navigate to="/" />}
+        />
+        <Route
+          path="/Users"
+          element={<Users />}
         />
       </Routes>
     </>

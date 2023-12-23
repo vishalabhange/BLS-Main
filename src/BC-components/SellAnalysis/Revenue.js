@@ -5,6 +5,10 @@ import "../SellAnalysis/Revenue.css";
 const Revenue = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [invoices, setInvoices] = useState([]);
+  const [invoiceItems, setInvoiceItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const getAuthToken = () => {
     const authToken = localStorage.getItem("authToken");
     return authToken;
@@ -14,7 +18,7 @@ const Revenue = () => {
     const authToken = getAuthToken();
 
     const headers = {
-      Authorization: `${authToken}`, // Assuming the token type is "Bearer"
+      Authorization: `${authToken}`,
     };
 
     const fetchInvoices = async () => {
@@ -23,25 +27,50 @@ const Revenue = () => {
           "http://localhost:8000/api/invoices/invoices",
           { headers }
         );
-        console.log(response.data); // Log the data to the console
         setInvoices(response.data.invoices);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching invoices:", error);
+        setError("Error fetching invoices");
+        setLoading(false);
       }
     };
 
     fetchInvoices();
   }, []);
 
-  const handleInvoiceClick = (invoice) => {
-    setSelectedInvoice(invoice);
+  const fetchInvoiceItems = async (MainInvoiceID) => {
+    try {
+      const authToken = getAuthToken();
+
+      const headers = {
+        Authorization: `${authToken}`,
+      };
+      const response = await axios.get(
+        `http://localhost:8000/api/invoices/invoicesitem/${MainInvoiceID}`,
+        { headers }
+      );
+      setInvoiceItems(response.data.invoiceItems);
+    } catch (error) {
+      console.error("Error fetching invoice items:", error);
+      setError("Error fetching invoice items");
+    }
   };
+
+  const handleInvoiceClick = async (invoice) => {
+    setSelectedInvoice(invoice);
+    console.log("Selected Invoice ID:", invoice.MainInvoiceID);
+    fetchInvoiceItems(invoice.MainInvoiceID);
+  };
+  
 
   return (
     <>
       <h2>Invoice History</h2>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
       <div className="HistoryList">
-        <ul>
+        <ol>
           {invoices.map((invoice) => (
             <li
               key={invoice.MainInvoiceID}
@@ -49,21 +78,42 @@ const Revenue = () => {
             >
               Invoice Number: {invoice.MainInvoiceID || "N/A"}, Date:{" "}
               {invoice.DatePurchased || "N/A"}, Customer Name:{" "}
-              {invoice.VendorID || "N/A"}
+              {invoice.Customer || "N/A"}
+
+              {/* Display detailed information below the selected invoice in the list */}
+              {selectedInvoice && selectedInvoice.MainInvoiceID === invoice.MainInvoiceID && (
+                <div className="DetailedInvoiceInfo">
+                  <h3>Selected Invoice Details</h3>
+                  <p>Invoice Number: {selectedInvoice.MainInvoiceID}</p>
+                  <p>Invoice Date: {selectedInvoice.DatePurchased || "N/A"}</p>
+                  <p>Customer Name: {selectedInvoice.Customer || "N/A"}</p>
+
+                  {/* Display detailed invoice items in a table */}
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {invoiceItems.map((item) => (
+                        <tr key={item.ProductName}>
+                          <td>{item.ProductName}</td>
+                          <td>{item.Quantity}</td>
+                          <td>{item.UnitPrice}</td>
+                          <td>{item.SubTotal}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </li>
           ))}
-        </ul>
-
-        {/* Detailed information of the selected invoice */}
-        {selectedInvoice && (
-          <div className="HistoryListItem">
-            <h3>Selected Invoice Details</h3>
-            <p>Invoice Number: {selectedInvoice.MainInvoiceID || "N/A"}</p>
-            <p>Invoice Date: {selectedInvoice.DatePurchased || "N/A"}</p>
-            <p>Customer Name: {selectedInvoice.VendorID || "N/A"}</p>
-            {/* Add more details as needed */}
-          </div>
-        )}
+        </ol>
       </div>
     </>
   );
